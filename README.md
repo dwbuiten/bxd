@@ -55,8 +55,8 @@ Building
 --------
 
 To build BXD, you need a C99 compiler, a POSIX system, and a copy of
-termbox in your compiler's include and library path. Then simply type
-`make`.
+[termbox](https://github.com/nsf/termbox/) in your compiler's include
+and library path. Then simply type `make`.
 
 Bugs & Patches
 --------------

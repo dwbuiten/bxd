@@ -34,6 +34,12 @@ Currently, the command like arguments are very simple:
 
     Usage: bxd file1 file2
 
+Keys are:
+
+* `q` to quit.
+* `space` to seek to next diff.
+* `up`/`down` to scroll up and down.
+
 Current Limitations
 -------------------
 

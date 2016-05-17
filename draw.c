@@ -27,7 +27,7 @@ unsigned int get_line_per_side(void)
 
 static inline char get_char(char c)
 {
-    if (c > 32 && c < 127)
+    if (c > 31 && c < 127)
         return c;
     else
         return '.';

@@ -30,7 +30,7 @@ void load_previous(Context *ctx, uint8_t *lbuf, size_t *scratch)
 bool calc_next_mask(Context *ctx, uint8_t *lbuf, size_t *scratch)
 {
     /* Dummy call. */
-    draw_ui(ctx);
+    draw_ui_dummy(ctx);
 
     ctx->old_offset = ctx->offset;
     ctx->old_nf_offset = ctx->nf_offset;

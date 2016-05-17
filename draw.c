@@ -33,6 +33,64 @@ static inline char get_char(char c)
         return '.';
 }
 
+#define FBUFOK (np + (size_t) ctx->nf_offset < ctx->nsize && op + (size_t) ctx->of_offset < ctx->osize)
+#define BUFOK (FBUFOK && odp < ctx->odsize && ndp < ctx->ndsize)
+
+void draw_ui_dummy(Context *ctx)
+{
+    int w;
+    int h;
+    int ratio;
+    unsigned int op  = 0;
+    unsigned int np  = 0;
+    unsigned int odp = 0;
+    unsigned int ndp = 0;
+
+    w     = tb_width();
+    h     = tb_height();
+    ratio = ((w / 2 - 4) / 4) * 3;
+
+    for (int j = 3; j < h - 1 + ctx->offset; j += 2) {
+        int should_draw = (j - 3 >= ctx->offset);
+
+        j -= ctx->offset;
+
+        for (int i = 3; i < ratio && BUFOK; i += 3) {
+            switch (ctx->ndiff[ndp]) {
+            case CHANGED:
+            case SAME:
+                np++;
+
+                if (!should_draw)
+                    ctx->nshift = np;
+
+                break;
+            case MISSING:
+                break;
+            }
+            ndp++;
+
+            switch (ctx->odiff[odp]) {
+            case CHANGED:
+            case SAME:
+                op++;
+
+                if (!should_draw)
+                    ctx->oshift = op;
+
+                break;
+            case MISSING:
+                break;
+            }
+            odp++;
+        }
+
+        j += ctx->offset;
+    }
+
+    ctx->done = !FBUFOK;
+}
+
 void draw_ui(Context *ctx)
 {
     struct tb_cell *buf;
@@ -132,8 +190,6 @@ void draw_ui(Context *ctx)
     ctx->oshift = 0;
     ctx->nshift = 0;
 
-#define FBUFOK (np + (size_t) ctx->nf_offset < ctx->nsize && op + (size_t) ctx->of_offset < ctx->osize)
-#define BUFOK (FBUFOK && odp < ctx->odsize && ndp < ctx->ndsize)
     for (int j = 3; j < h - 1 + ctx->offset; j += 2) {
         int nprev = 0;
         int oprev = 0;
@@ -244,9 +300,6 @@ void draw_ui(Context *ctx)
     }
 
      ctx->done = !FBUFOK;
-
-#undef FBUFOK
-#undef BUFOK
 
     {
         off_t ooff = ctx->of_offset + ctx->oshift;

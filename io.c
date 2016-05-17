@@ -89,7 +89,6 @@ fail:
     if (nfd > 0)
         close(nfd);
 
-    close_files(ctx);
     return ret;
 }
 

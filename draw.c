@@ -33,7 +33,7 @@ static inline char get_char(char c)
         return '.';
 }
 
-#define FBUFOK (np + (size_t) ctx->nf_offset < ctx->nsize && op + (size_t) ctx->of_offset < ctx->osize)
+#define FBUFOK (np + (size_t) ctx->nf_offset < ctx->nsize || op + (size_t) ctx->of_offset < ctx->osize)
 #define BUFOK (FBUFOK && odp < ctx->odsize && ndp < ctx->ndsize)
 
 void draw_ui_dummy(Context *ctx)

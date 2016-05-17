@@ -48,9 +48,6 @@ and as such, lacks a few features that would be very nice to have.
 
 This list will be updated as limitations are removed.
 
-* Scrollback is limited to the current block and the previous block. This
-  will go away in the future, optionally, for a memory usage and speed
-  tradeoff.
 * The seek-to-next-difference feature currently only seeks to the block which
   contains the next difference, even if it isn't necessarily displayed on
   the screen.

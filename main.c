@@ -51,8 +51,16 @@ int main(int argc, char *argv[])
         goto end;
     }
 
-    ctx.old_of_offset = -1;
-    ctx.old_nf_offset = -1;
+    ctx.prev_offset = malloc(1024 * 1024 * sizeof(*(ctx.prev_offset)));
+    ctx.prev_nshift = malloc(1024 * 1024 * sizeof(*(ctx.prev_nshift)));
+    ctx.prev_oshift = malloc(1024 * 1024 * sizeof(*(ctx.prev_oshift)));
+    if (ctx.prev_offset == NULL || ctx.prev_oshift == NULL || ctx.prev_nshift == NULL) {
+        fprintf(stderr, "Could not allocate offset tracking buffers.\n");
+        ret = 1;
+        goto end;
+    }
+    ctx.prev_offset_size = 1024 * 1024;
+
     ctx.blocksize = BLOCKSIZE;
 
     ret = open_files(&ctx, argv[1], argv[2], err);
@@ -87,7 +95,7 @@ int main(int argc, char *argv[])
                 switch (ev.key) {
                 case TB_KEY_ARROW_UP:
                     if (ctx.offset == 0) {
-                        if (ctx.old_nf_offset >= 0 && ctx.old_of_offset >= 0)
+                        if (ctx.nf_offset != 0 && ctx.of_offset != 0)
                             load_previous(&ctx, &lbuf[0], scratch);
                     } else {
                         ctx.offset -= 2;
@@ -102,22 +110,32 @@ int main(int argc, char *argv[])
 
                     ctx.offset += 2;
 
-                    if (((size_t) ctx.offset / 2) * cpl + cpl * lpu >= ctx.blocksize)
-                        calc_next_mask(&ctx, &lbuf[0], scratch);
+                    if (((size_t) ctx.offset / 2) * cpl + cpl * lpu >= ctx.blocksize) {
+                        bool err;
+
+                        calc_next_mask(&ctx, &lbuf[0], scratch, &err);
+
+                        if (err)
+                            goto end;
+                    }
 
                     break;
                 }
                 case TB_KEY_SPACE: {
                     unsigned int cpl = get_char_per_line();
                     unsigned int lpu = get_line_per_side();
+                    bool err = false;
 
                     do {
+                        if (err)
+                            goto end;
+
                         while (((size_t) ctx.offset / 2) * cpl + cpl * lpu < ctx.blocksize)
                             ctx.offset += 2;
-                    } while((!ctx.done) && calc_next_mask(&ctx, &lbuf[0], scratch));
+                    } while((!ctx.done) && calc_next_mask(&ctx, &lbuf[0], scratch, &err));
 
-                    if (ctx.old_offset > 0)
-                        ctx.old_offset -= 2;
+                    if (err)
+                        goto end;
 
                     break;
                 }
@@ -143,6 +161,15 @@ end:
 
     if (scratch != NULL)
         free(scratch);
+
+    if (ctx.prev_offset != NULL)
+        free(ctx.prev_offset);
+
+    if (ctx.prev_oshift != NULL)
+        free(ctx.prev_oshift);
+
+    if (ctx.prev_nshift != NULL)
+        free(ctx.prev_nshift);
 
     close_files(&ctx);
 

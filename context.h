@@ -14,9 +14,6 @@ typedef struct Context {
     size_t osize;
     size_t nsize;
 
-    off_t old_of_offset;
-    off_t old_nf_offset;
-
     off_t of_offset;
     off_t nf_offset;
 
@@ -29,7 +26,12 @@ typedef struct Context {
     size_t nshift;
     size_t oshift;
     off_t offset;
-    off_t old_offset;
+
+    uint16_t *prev_offset;
+    uint16_t *prev_oshift;
+    uint16_t *prev_nshift;
+    size_t prev_offset_size;
+    off_t offset_pos;
 
     bool done;
 } Context;

@@ -14,9 +14,6 @@
 
 #define BLOCKSIZE (1024)
 
-#define FILE1 "old.nut"
-#define FILE2 "new.nut"
-
 int main(int argc, char *argv[])
 {
     uint8_t lbuf[BLOCKSIZE] = { 0 };

@@ -18,4 +18,4 @@ install: bxd
 uninstall:
 	@rm -fv $(PREFIX)/bin/bxd
 
-all: hcmp
+all: bxd

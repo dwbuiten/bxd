@@ -83,10 +83,10 @@ int open_files(Context *ctx, const char *orig, const char *new, char err[1024])
     return 0;
 
 fail:
-    if (ofd < 0)
+    if (ofd > 0)
         close(ofd);
 
-    if (nfd < 0)
+    if (nfd > 0)
         close(nfd);
 
     close_files(ctx);

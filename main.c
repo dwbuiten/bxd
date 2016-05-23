@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     size_t *scratch = NULL;
     int ret = 0;
     int initted = false;
-    Context ctx = { 0 };
+    Context ctx;
     char err[1024];
 
     if (argc < 3) {
@@ -30,6 +30,8 @@ int main(int argc, char *argv[])
                         "Usage: %s file1 file2\n\n", argv[0]);
         return 0;
     }
+
+    memset(&ctx, 0, sizeof(ctx));
 
     /* Allocations. */
     ctx.odiff = calloc(BLOCKSIZE * BLOCKSIZE, 1);
@@ -65,7 +67,7 @@ int main(int argc, char *argv[])
 
     ret = open_files(&ctx, argv[1], argv[2], err);
     if (ret != 0 ) {
-        fprintf(stderr, err);
+        fputs(err, stderr);
         ret = 1;
         goto end;
     }

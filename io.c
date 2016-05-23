@@ -15,23 +15,23 @@ int open_files(Context *ctx, const char *orig, const char *new, char err[1024])
     int nfd = -1;
     int ofd = -1;
     int ret = 0;
-    struct stat st = { 0 };
+    struct stat st;
 
     /* Stash filenames. */
     ctx->oname = malloc(strlen(orig) + 1);
     if (ctx->oname == NULL) {
-        sprintf(err, "Could not allocate oname buffer.\n");
+        strcpy(err, "Could not allocate oname buffer.\n");
         ret = 1;
         goto fail;
     }
     ctx->nname = malloc(strlen(new) + 1);
     if (ctx->nname == NULL) {
-        sprintf(err, "Could not allocate oname buffer.\n");
+        strcpy(err, "Could not allocate oname buffer.\n");
         ret = 1;
         goto fail;
     }
-    sprintf(ctx->oname, orig);
-    sprintf(ctx->nname, new);
+    strcpy(ctx->oname, orig);
+    strcpy(ctx->nname, new);
 
     /* Fill in filesize. */
     ret = stat(ctx->oname, &st);

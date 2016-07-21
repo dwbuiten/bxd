@@ -36,7 +36,7 @@ void load_previous(Context *ctx, uint8_t *lbuf, size_t *scratch)
 bool calc_next_mask(Context *ctx, uint8_t *lbuf, size_t *scratch, bool *err)
 {
     off_t old_pos = ctx->offset_pos;
-    size_t cmp_size = MIN(MIN(ctx->osize - ctx->of_offset, ctx->blocksize), ctx->nsize - ctx->nf_offset);
+    size_t cmp_size;
 
     *err = false;
 
@@ -89,6 +89,8 @@ bool calc_next_mask(Context *ctx, uint8_t *lbuf, size_t *scratch, bool *err)
     ctx->odsize = 0;
 
     ctx->offset = 0;
+
+    cmp_size = MIN(MIN(ctx->osize - ctx->of_offset, ctx->blocksize), ctx->nsize - ctx->nf_offset);
 
     if (!memcmp(&ctx->obuf[ctx->of_offset], &ctx->nbuf[ctx->nf_offset], cmp_size)) {
         ctx->ndsize = cmp_size;

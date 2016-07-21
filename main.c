@@ -128,6 +128,9 @@ int main(int argc, char *argv[])
                     unsigned int lpu = get_line_per_side();
                     bool err = false;
 
+                    if (ctx.done)
+                        break;
+
                     do {
                         if (err)
                             goto end;

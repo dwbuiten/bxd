@@ -95,6 +95,8 @@ bool calc_next_mask(Context *ctx, uint8_t *lbuf, size_t *scratch, bool *err)
     if (!memcmp(&ctx->obuf[ctx->of_offset], &ctx->nbuf[ctx->nf_offset], cmp_size)) {
         ctx->ndsize = cmp_size;
         ctx->odsize = cmp_size;
+        if (cmp_size < ctx->blocksize)
+            ctx->done = true;
         return true;
     }
 

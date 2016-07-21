@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 
                         while (((size_t) ctx.offset / 2) * cpl + cpl * lpu < ctx.blocksize)
                             ctx.offset += 2;
-                    } while((!ctx.done) && calc_next_mask(&ctx, &lbuf[0], scratch, &err));
+                    } while(calc_next_mask(&ctx, &lbuf[0], scratch, &err) && !ctx.done);
 
                     if (err)
                         goto end;

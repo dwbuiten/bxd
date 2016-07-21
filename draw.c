@@ -50,6 +50,9 @@ void draw_ui_dummy(Context *ctx)
     h     = tb_height();
     ratio = ((w / 2 - 4) / 4) * 3;
 
+    ctx->nshift = 0;
+    ctx->oshift = 0;
+
     for (int j = 3; j < h - 1 + ctx->offset; j += 2) {
         int should_draw = (j - 3 >= ctx->offset);
 

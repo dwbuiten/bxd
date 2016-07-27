@@ -10,6 +10,26 @@
 #include "context.h"
 #include "io.h"
 
+static int stash_names(Context *ctx, const char *orig, const char *new, char err[1024])
+{
+    /* Stash filenames. */
+    ctx->oname = malloc(strlen(orig) + 1);
+    if (ctx->oname == NULL) {
+        strcpy(err, "Could not allocate oname buffer.\n");
+        return 1;
+    }
+    ctx->nname = malloc(strlen(new) + 1);
+    if (ctx->nname == NULL) {
+        strcpy(err, "Could not allocate oname buffer.\n");
+        return 1;
+    }
+
+    strcpy(ctx->oname, orig);
+    strcpy(ctx->nname, new);
+
+    return 0;
+}
+
 int open_files(Context *ctx, const char *orig, const char *new, char err[1024])
 {
     int nfd = -1;
@@ -17,21 +37,9 @@ int open_files(Context *ctx, const char *orig, const char *new, char err[1024])
     int ret = 0;
     struct stat st;
 
-    /* Stash filenames. */
-    ctx->oname = malloc(strlen(orig) + 1);
-    if (ctx->oname == NULL) {
-        strcpy(err, "Could not allocate oname buffer.\n");
-        ret = 1;
+    ret = stash_names(ctx, orig, new, err);
+    if (ret < 0)
         goto fail;
-    }
-    ctx->nname = malloc(strlen(new) + 1);
-    if (ctx->nname == NULL) {
-        strcpy(err, "Could not allocate oname buffer.\n");
-        ret = 1;
-        goto fail;
-    }
-    strcpy(ctx->oname, orig);
-    strcpy(ctx->nname, new);
 
     /* Fill in filesize. */
     ret = stat(ctx->oname, &st);

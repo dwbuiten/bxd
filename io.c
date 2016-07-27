@@ -30,33 +30,44 @@ static int stash_names(Context *ctx, const char *orig, const char *new, char err
     return 0;
 }
 
-int open_files(Context *ctx, const char *orig, const char *new, char err[1024])
+static int fill_filesize(Context *ctx, char err[1024])
 {
-    int nfd = -1;
-    int ofd = -1;
-    int ret = 0;
+    int ret;
     struct stat st;
-
-    ret = stash_names(ctx, orig, new, err);
-    if (ret < 0)
-        goto fail;
 
     /* Fill in filesize. */
     ret = stat(ctx->oname, &st);
     if (ret != 0) {
         sprintf(err, "Could not stat %s.\n", ctx->oname);
-        ret = 1;
-        goto fail;
+        return 1;
     }
     ctx->osize = st.st_size;
+
     memset(&st, 0, sizeof(st));
+
     ret = stat(ctx->nname, &st);
     if (ret != 0) {
         sprintf(err, "Could not stat %s.\n", ctx->nname);
-        ret = 1;
-        goto fail;
+        return 1;
     }
     ctx->nsize = st.st_size;
+
+    return 0;
+}
+
+int open_files(Context *ctx, const char *orig, const char *new, char err[1024])
+{
+    int nfd = -1;
+    int ofd = -1;
+    int ret = 0;
+
+    ret = stash_names(ctx, orig, new, err);
+    if (ret < 0)
+        goto fail;
+
+    ret = fill_filesize(ctx, err);
+    if (ret < 0)
+        goto fail;
 
     ofd = open(ctx->oname, O_RDONLY, 0);
     if (ofd < 0) {

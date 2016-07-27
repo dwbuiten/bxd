@@ -1,6 +1,6 @@
 PREFIX=/usr/local
 
-CFLAGS = -O3 -std=c99 -Wall -Wextra -g
+CFLAGS = -D_FILE_OFFSET_BITS=64 -O3 -std=c99 -Wall -Wextra -g
 
 OBJECTS = lcs.o main.o draw.o io.o util.o
 

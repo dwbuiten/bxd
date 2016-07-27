@@ -310,8 +310,8 @@ void draw_ui(Context *ctx)
         char osbuf[11];
         char nsbuf[11];
 
-        sprintf(osbuf, "0x%08zX", ooff);
-        sprintf(nsbuf, "0x%08zX", noff);
+        sprintf(osbuf, "0x%08jX", (intmax_t) ooff);
+        sprintf(nsbuf, "0x%08jX", (intmax_t) noff);
         for (int i = 0; i < 11; i++) {
             buf[w         + 11 + i].ch = osbuf[i];
             buf[w + w / 2 + 11 + i].ch = nsbuf[i];

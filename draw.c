@@ -1,3 +1,7 @@
+#ifdef _WIN32
+#define __USE_MINGW_ANSI_STDIO 1
+#endif
+
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>

@@ -3,9 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#ifndef _WIN32
+#include <sys/mman.h>
+#else
+#include <windows.h>
+#endif
 
 #include "context.h"
 #include "io.h"
@@ -55,6 +60,9 @@ static int fill_filesize(Context *ctx, char err[1024])
     return 0;
 }
 
+#ifndef _WIN32
+
+/* Standard POSIX memory mapping. */
 int open_files(Context *ctx, const char *orig, const char *new, char err[1024])
 {
     int nfd = -1;
@@ -99,7 +107,7 @@ int open_files(Context *ctx, const char *orig, const char *new, char err[1024])
     close(nfd);
     nfd = -1;
 
-    return 0;
+    ret = 0;
 
 fail:
     if (ofd > 0)
@@ -129,3 +137,109 @@ void close_files(Context *ctx)
         assert(mun == 0);
     }
 }
+
+#else
+
+/* Windows memory mapping. */
+int open_files(Context *ctx, const char *orig, const char *new, char err[1024])
+{
+    HANDLE nfd  = INVALID_HANDLE_VALUE;
+    HANDLE ofd  = INVALID_HANDLE_VALUE;
+    HANDLE mnfd = INVALID_HANDLE_VALUE;
+    HANDLE mofd = INVALID_HANDLE_VALUE;
+    int ret     = 0;
+
+    ret = stash_names(ctx, orig, new, err);
+    if (ret < 0)
+        goto fail;
+
+    ret = fill_filesize(ctx, err);
+    if (ret < 0)
+        goto fail;
+
+    ofd = CreateFile(ctx->oname, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
+    if (ofd == INVALID_HANDLE_VALUE) {
+        sprintf(err, "Could not open %s.\n", ctx->oname);
+        ret = 1;
+        goto fail;
+    }
+
+    mofd = CreateFileMapping(ofd, NULL, PAGE_READONLY, 0, 0, 0);
+    if (mofd == INVALID_HANDLE_VALUE) {
+        sprintf(err, "Could not create mapping for %s.\n", ctx->oname);
+        ret = 1;
+        goto fail;
+    }
+
+    ctx->obuf = MapViewOfFile(mofd, FILE_MAP_READ, 0, 0, 0);
+    if (ctx->obuf == NULL) {
+        sprintf(err, "Could not mmap %s.\n", ctx->oname);
+        ret = 1;
+        goto fail;
+    }
+
+    CloseHandle(ofd);
+    CloseHandle(mofd);
+    ofd  = INVALID_HANDLE_VALUE;
+    mofd = INVALID_HANDLE_VALUE;
+
+    nfd = CreateFile(ctx->nname, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_FLAG_RANDOM_ACCESS, NULL);
+    if (nfd == INVALID_HANDLE_VALUE) {
+        sprintf(err, "Could not open %s.\n", ctx->nname);
+        ret = 1;
+        goto fail;
+    }
+
+    mnfd = CreateFileMapping(nfd, NULL, PAGE_READONLY, 0, 0, 0);
+    if (mnfd == INVALID_HANDLE_VALUE) {
+        sprintf(err, "Could not create mapping for %s.\n", ctx->nname);
+        ret = 1;
+        goto fail;
+    }
+
+    ctx->nbuf = MapViewOfFile(mnfd, FILE_MAP_READ, 0, 0, 0);
+    if (ctx->obuf == NULL) {
+        sprintf(err, "Could not mmap %s.\n", ctx->nname);
+        ret = 1;
+        goto fail;
+    }
+
+    CloseHandle(nfd);
+    CloseHandle(mnfd);
+    nfd  = INVALID_HANDLE_VALUE;
+    mnfd = INVALID_HANDLE_VALUE;
+
+    ret = 0;
+
+fail:
+    if (nfd != INVALID_HANDLE_VALUE)
+        CloseHandle(nfd);
+
+    if (ofd != INVALID_HANDLE_VALUE)
+        CloseHandle(ofd);
+
+    if (mnfd != INVALID_HANDLE_VALUE)
+        CloseHandle(mnfd);
+
+    if (mofd != INVALID_HANDLE_VALUE)
+        CloseHandle(mofd);
+
+    return ret;
+}
+
+void close_files(Context *ctx)
+{
+    if (ctx->nname != NULL)
+        free(ctx->nname);
+
+    if (ctx->oname != NULL)
+        free(ctx->oname);
+
+    if (ctx->obuf != NULL)
+        UnmapViewOfFile(ctx->obuf);
+
+    if (ctx->nbuf != NULL)
+        UnmapViewOfFile(ctx->nbuf);
+}
+
+#endif

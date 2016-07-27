@@ -5,7 +5,7 @@ CFLAGS = -D_FILE_OFFSET_BITS=64 -O3 -std=c99 -Wall -Wextra -g
 OBJECTS = lcs.o main.o draw.o io.o util.o
 
 bxd: $(OBJECTS)
-	$(CC) -o $@ $^ -ltermbox
+	$(CC) -o $@ $^ -ltermbox $(LIBS)
 
 distclean: clean
 

@@ -61,6 +61,11 @@ To build BXD, you need a C99 compiler, a POSIX system, and a copy of
 [termbox](https://github.com/nsf/termbox/) in your compiler's include
 and library path. Then simply type `make`.
 
+If you wish to build on Windows, you will need MinGW-w64, and a copy
+of the [termbox-go C shim](https://github.com/dwbuiten/termbox-go-c)
+in the compiler's include and library path. Then type
+`make LIBS="-lntdll -lws2_32 -lwinmm"`.
+
 Bugs & Patches
 --------------
 

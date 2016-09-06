@@ -33,6 +33,7 @@ typedef struct Context {
     size_t prev_offset_size;
     off_t offset_pos;
 
+    bool is_cleared;
     bool done;
 } Context;
 

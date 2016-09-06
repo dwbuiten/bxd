@@ -141,5 +141,7 @@ bool calc_lcs_mask(Context *ctx, uint8_t *lbuf, size_t *scratch)
     ctx->odsize = odp - 1;
     ctx->ndsize = ndp - 1;
 
+    ctx->is_cleared = false;
+
     return ret;
 }

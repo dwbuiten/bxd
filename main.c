@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
     ctx.prev_offset_size = 1024 * 1024;
 
     ctx.blocksize = BLOCKSIZE;
+    ctx.is_cleared = true;
 
     ret = open_files(&ctx, argv[1], argv[2], err);
     if (ret != 0 ) {

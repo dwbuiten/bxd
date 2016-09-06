@@ -21,12 +21,14 @@ void load_previous(Context *ctx, uint8_t *lbuf, size_t *scratch)
 
     ctx->offset_pos--;
 
-    memset(scratch, 0, (ctx->blocksize + 1) * (ctx->blocksize + 1) * sizeof(*scratch));
+    if (!ctx->is_cleared) {
+        memset(scratch, 0, (ctx->blocksize + 1) * (ctx->blocksize + 1) * sizeof(*scratch));
 
-    memset(lbuf, 0, ctx->blocksize);
+        memset(lbuf, 0, ctx->blocksize);
 
-    memset(&ctx->odiff[0], 0, ctx->odsize);
-    memset(&ctx->ndiff[0], 0, ctx->ndsize);
+        memset(&ctx->odiff[0], 0, ctx->odsize);
+        memset(&ctx->ndiff[0], 0, ctx->ndsize);
+    }
     ctx->ndsize = 0;
     ctx->odsize = 0;
 
@@ -80,11 +82,15 @@ bool calc_next_mask(Context *ctx, uint8_t *lbuf, size_t *scratch, bool *err)
     ctx->nf_offset += ctx->nshift;
     ctx->of_offset += ctx->oshift;
 
-    memset(lbuf, 0, ctx->blocksize);
+    if (!ctx->is_cleared) {
+        memset(lbuf, 0, ctx->blocksize);
 
-    memset(scratch, 0, (ctx->blocksize + 1) * (ctx->blocksize + 1) * sizeof(*scratch));
-    memset(&ctx->odiff[0], 0, ctx->odsize);
-    memset(&ctx->ndiff[0], 0, ctx->ndsize);
+        memset(scratch, 0, (ctx->blocksize + 1) * (ctx->blocksize + 1) * sizeof(*scratch));
+        memset(&ctx->odiff[0], 0, ctx->odsize);
+        memset(&ctx->ndiff[0], 0, ctx->ndsize);
+
+        ctx->is_cleared = true;
+    }
     ctx->ndsize = 0;
     ctx->odsize = 0;
 

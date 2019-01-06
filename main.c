@@ -179,6 +179,11 @@ int main(int argc, char *argv[])
                     if (err)
                         goto end;
 
+                    while (!ctx.has_change && !ctx.done) {
+                        ctx.offset += 2;
+                        draw_ui_dummy(&ctx);
+                    }
+
                     break;
                 }
                 case 0:

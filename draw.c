@@ -57,6 +57,8 @@ void draw_ui_dummy(Context *ctx)
     ctx->nshift = 0;
     ctx->oshift = 0;
 
+    ctx->has_change = false;
+
     for (int j = 3; j < h - 1 + ctx->offset; j += 2) {
         int should_draw = (j - 3 >= ctx->offset);
 
@@ -65,6 +67,7 @@ void draw_ui_dummy(Context *ctx)
         for (int i = 3; i < ratio && BUFOK; i += 3) {
             switch (ctx->ndiff[ndp]) {
             case CHANGED:
+                ctx->has_change = should_draw;
             case SAME:
                 np++;
 
@@ -73,12 +76,14 @@ void draw_ui_dummy(Context *ctx)
 
                 break;
             case MISSING:
+                ctx->has_change = should_draw;
                 break;
             }
             ndp++;
 
             switch (ctx->odiff[odp]) {
             case CHANGED:
+                ctx->has_change = should_draw;
             case SAME:
                 op++;
 
@@ -87,6 +92,7 @@ void draw_ui_dummy(Context *ctx)
 
                 break;
             case MISSING:
+                ctx->has_change = should_draw;
                 break;
             }
             odp++;
@@ -197,6 +203,8 @@ void draw_ui(Context *ctx)
     ctx->oshift = 0;
     ctx->nshift = 0;
 
+    ctx->has_change = false;
+
     for (int j = 3; j < h - 1 + ctx->offset; j += 2) {
         int nprev = 0;
         int oprev = 0;
@@ -210,6 +218,7 @@ void draw_ui(Context *ctx)
 
             switch (ctx->ndiff[ndp]) {
             case CHANGED:
+                ctx->has_change = should_draw;
                 if (should_draw) {
                     if (nprev)
                         buf[w * j + w / 2 + i - 1].bg = TB_WHITE;
@@ -240,6 +249,7 @@ void draw_ui(Context *ctx)
 
                 break;
             case MISSING:
+                ctx->has_change = should_draw;
                 if (should_draw) {
                     if (nprev)
                          buf[w * j + w / 2 + i - 1].bg = TB_WHITE;
@@ -256,6 +266,7 @@ void draw_ui(Context *ctx)
 
             switch (ctx->odiff[odp]) {
             case CHANGED:
+                ctx->has_change = should_draw;
                 if (should_draw) {
                     if (oprev)
                          buf[w * j + i - 1].bg = TB_WHITE;
@@ -286,6 +297,7 @@ void draw_ui(Context *ctx)
 
                 break;
             case MISSING:
+                ctx->has_change = should_draw;
                 if(should_draw) {
                     if (oprev)
                          buf[w * j + i - 1].bg = TB_WHITE;

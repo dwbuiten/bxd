@@ -49,9 +49,6 @@ and as such, lacks a few features that would be very nice to have.
 
 This list will be updated as limitations are removed.
 
-* The seek-to-next-difference feature currently only seeks to the block which
-  contains the next difference, even if it isn't necessarily displayed on
-  the screen.
 * There is no seek-to-offset featrue or dialogue yet.
 * There may be UI text overlap when using very small terminal sizes.
 

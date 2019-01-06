@@ -34,6 +34,7 @@ typedef struct Context {
     off_t offset_pos;
 
     bool is_cleared;
+    bool has_change;
     bool done;
 } Context;
 

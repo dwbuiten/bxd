@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     if (argc < 3) {
         fprintf(stderr, "Binary Hex Diff\n"
-                        "Copyright (c) 2016 Derek Buitenhuis.\n\n"
+                        "Copyright (c) 2016-2019 Derek Buitenhuis.\n\n"
                         "A tool to compare two arbitrarily sized binary files.\n\n"
                         "Usage: %s file1 file2\n\n", argv[0]);
         return 0;
@@ -122,6 +122,42 @@ int main(int argc, char *argv[])
                             goto end;
                     }
 
+                    break;
+                }
+                case TB_KEY_PGUP: {
+                    unsigned int lpu = get_line_per_side();
+
+                    for (unsigned int i = 0; i < lpu; i++) {
+                        if (ctx.offset == 0) {
+                            if (ctx.nf_offset != 0 && ctx.of_offset != 0)
+                                load_previous(&ctx, &lbuf[0], scratch);
+                        } else {
+                            ctx.offset -= 2;
+                        }
+                    }
+                    break;
+                }
+                case TB_KEY_PGDN: {
+                    unsigned int cpl = get_char_per_line();
+                    unsigned int lpu = get_line_per_side();
+
+                    if (ctx.done)
+                        continue;
+
+                    for (unsigned int i = 0; i < lpu && !ctx.done; i++) {
+                        ctx.offset += 2;
+
+                        if (((size_t) ctx.offset / 2) * cpl + cpl * lpu >= ctx.blocksize) {
+                            bool err;
+
+                            calc_next_mask(&ctx, &lbuf[0], scratch, &err);
+
+                            if (err)
+                                goto end;
+                        }
+
+                        draw_ui_dummy(&ctx);
+                    }
                     break;
                 }
                 case TB_KEY_SPACE: {

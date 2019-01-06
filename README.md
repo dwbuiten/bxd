@@ -1,7 +1,7 @@
 BXD: Binary Hex Diff
 ====================
 
-Copyright (c) 2016 Derek Buitenhuis <derek.buitenhuis at gmail dot com>
+Copyright (c) 2016-2019 Derek Buitenhuis <derek.buitenhuis at gmail dot com>
 
 ![BXD](http://chromashift.org/bxd.png)
 
@@ -28,7 +28,7 @@ Usage
 Currently, the command like arguments are very simple:
 
     Binary Hex Diff
-    Copyright (c) 2016 Derek Buitenhuis.
+    Copyright (c) 2016-2019 Derek Buitenhuis.
 
     A tool to compare two arbitrarily sized binary files.
 
@@ -39,6 +39,7 @@ Keys are:
 * `q` to quit.
 * `space` to seek to next diff.
 * `up`/`down` to scroll up and down.
+* `pgup` / `pgdn` to scroll up and down by one full screen.
 
 Current Limitations
 -------------------

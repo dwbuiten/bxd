@@ -160,6 +160,26 @@ int main(int argc, char *argv[])
                     }
                     break;
                 }
+                case TB_KEY_BACKSPACE:
+                case TB_KEY_BACKSPACE2: {
+                    bool change_found = false;
+
+                    while (!change_found && ctx.nf_offset != 0 && ctx.of_offset != 0) {
+                        ctx.offset = 0;
+
+                        if (ctx.nf_offset != 0 && ctx.of_offset != 0)
+                            change_found = !load_previous(&ctx, &lbuf[0], scratch);
+
+                        draw_ui_dummy(&ctx);
+                    }
+
+                    while (!ctx.has_change && ctx.offset != 0) {
+                        ctx.offset -= 2;
+                        draw_ui_dummy(&ctx);
+                    }
+
+                    break;
+                }
                 case TB_KEY_SPACE: {
                     unsigned int cpl = get_char_per_line();
                     unsigned int lpu = get_line_per_side();

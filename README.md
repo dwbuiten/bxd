@@ -37,7 +37,7 @@ Currently, the command like arguments are very simple:
 Keys are:
 
 * `q` to quit.
-* `space` to seek to next diff.
+* `space` / `backspace` to seek to next or previous diff.
 * `up`/`down` to scroll up and down.
 * `pgup` / `pgdn` to scroll up and down by one full screen.
 

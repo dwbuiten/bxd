@@ -10,7 +10,7 @@
 
 #define MIN(x,y) ((x) < (y) ? (x) : (y))
 
-void load_previous(Context *ctx, uint8_t *lbuf, size_t *scratch)
+bool load_previous(Context *ctx, uint8_t *lbuf, size_t *scratch)
 {
     off_t old_pos = ctx->offset_pos - 1;
 
@@ -32,7 +32,7 @@ void load_previous(Context *ctx, uint8_t *lbuf, size_t *scratch)
     ctx->ndsize = 0;
     ctx->odsize = 0;
 
-    calc_lcs_mask(ctx, lbuf, scratch);
+    return calc_lcs_mask(ctx, lbuf, scratch);
 }
 
 bool calc_next_mask(Context *ctx, uint8_t *lbuf, size_t *scratch, bool *err)

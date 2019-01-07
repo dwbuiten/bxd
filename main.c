@@ -166,10 +166,7 @@ int main(int argc, char *argv[])
 
                     while (!change_found && ctx.nf_offset != 0 && ctx.of_offset != 0) {
                         ctx.offset = 0;
-
-                        if (ctx.nf_offset != 0 && ctx.of_offset != 0)
-                            change_found = !load_previous(&ctx, &lbuf[0], scratch);
-
+                        change_found = !load_previous(&ctx, &lbuf[0], scratch);
                         draw_ui_dummy(&ctx);
                     }
 

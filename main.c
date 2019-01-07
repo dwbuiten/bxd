@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     ctx.is_cleared = true;
 
     ret = open_files(&ctx, argv[1], argv[2], err);
-    if (ret != 0 ) {
+    if (ret != 0) {
         fputs(err, stderr);
         ret = 1;
         goto end;

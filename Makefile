@@ -1,21 +1,25 @@
+TARGET = bxd
 PREFIX=/usr/local
 
 CFLAGS = -D_FILE_OFFSET_BITS=64 -O3 -std=c99 -Wall -Wextra -g
+LDLIBS = -ltermbox
+OBJECTS = src/lcs.o src/draw.o src/io.o src/util.o src/main.o
+RM = @rm -f
+INSTALL = @install -v
 
-OBJECTS = lcs.o main.o draw.o io.o util.o
+all: $(TARGET)
 
-bxd: $(OBJECTS)
-	$(CC) -o $@ $^ -ltermbox $(LIBS)
+$(TARGET): $(OBJECTS)
+	$(CC) -o $@ $^ $(LDLIBS)
 
 distclean: clean
 
 clean:
-	@rm -f $(OBJECTS) bxd
+	$(RM) $(OBJECTS) $(TARGET)
 
 install: bxd
-	@install -v bxd $(PREFIX)/bin/
+	$(INSTALL) $(TARGET) $(PREFIX)/bin/
 
 uninstall:
-	@rm -fv $(PREFIX)/bin/bxd
+	$(RM) $(PREFIX)/bin/$(TARGET)
 
-all: bxd
